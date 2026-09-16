@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import { getCategories } from './src/models/categories.js';
 
 dotenv.config();
 
@@ -34,12 +35,7 @@ app.get('/projects', async (req, res) => {
 // Service Project Categories page route
 app.get('/categories', async (req, res) => {
   const title = 'Categories';
-  const categories = [
-    'Environmental',
-    'Educational',
-    'Community Service',
-    'Health and Wellness',
-  ];
+  const categories = await getCategories();
   res.render('categories', { title, categories });
 });
 
