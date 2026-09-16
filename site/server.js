@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { getCategories } from './src/models/categories.js';
+import { getOrganizations } from './src/models/organizations.js';
+import { getProjects } from './src/models/projects.js';
 
 dotenv.config();
 
@@ -23,15 +25,16 @@ app.get('/', async (req, res) => {
 // Organizations page route
 app.get('/organizations', async (req, res) => {
   const title = 'Organizations';
-  res.render('organizations', { title });
+  const organizations = await getOrganizations();
+  res.render('organizations', { title, organizations });
 });
 
 // Service Projects page route
 app.get('/projects', async (req, res) => {
   const title = 'Service Projects';
-  res.render('projects', { title });
+  const projects = await getProjects();
+  res.render('projects', { title, projects });
 });
-
 // Service Project Categories page route
 app.get('/categories', async (req, res) => {
   const title = 'Categories';
