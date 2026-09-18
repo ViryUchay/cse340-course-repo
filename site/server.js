@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { getCategories } from './src/models/categories.js';
 import { getOrganizations } from './src/models/organizations.js';
 import { getProjects } from './src/models/projects.js';
+import pool from './src/database.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -47,6 +48,14 @@ app.get('/categories', asyncHandler(async (req, res) => {
   const title = 'Categories';
   const categories = await getCategories();
   res.render('categories', { title, categories });
+}));
+
+app.get('/health/db', asyncHandler(async (req, res) => {
+  const result = await pool.query('SELECT NOW() AS database_time');
+  res.json({
+    status: 'ok',
+    databaseTime: result.rows[0].database_time
+  });
 }));
 
 app.use((err, req, res, next) => {

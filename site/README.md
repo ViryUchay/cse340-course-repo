@@ -29,6 +29,8 @@ Categories pages backed by a PostgreSQL database.
 
 Then open http://localhost:3000.
 
+You can confirm the database connection with http://localhost:3000/health/db.
+
 ## Project structure
 
 ```text
@@ -64,6 +66,8 @@ public/
 5. Leave `DATABASE_SSL` unset for Render PostgreSQL so SSL is enabled.
 6. Deploy, then visit the generated `onrender.com` URL to confirm all four
    pages (`/`, `/organizations`, `/projects`, `/categories`) load correctly.
+   If the Home page works but the database pages do not, visit `/health/db`
+   and check the Render logs for the database error.
 
 ## Submission checklist
 
