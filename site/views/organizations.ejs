@@ -4,23 +4,13 @@
 <p class="page-intro">Browse organizations you can volunteer with. Each partners with local communities on ongoing service work.</p>
 
 <section class="card-grid">
-  <article class="card">
-    <img src="/images/org-green-earth.svg" alt="Green Earth Initiative logo" class="card-image" />
-    <h2>Green Earth Initiative</h2>
-    <p>A nonprofit focused on tree planting, clean-up drives, and environmental education programs.</p>
-  </article>
-
-  <article class="card">
-    <img src="/images/org-bright-futures.svg" alt="Bright Futures Tutoring logo" class="card-image" />
-    <h2>Bright Futures Tutoring</h2>
-    <p>Provides free after-school tutoring and mentorship for underserved students in the region.</p>
-  </article>
-
-  <article class="card">
-    <img src="/images/org-helping-hands.svg" alt="Helping Hands Food Bank logo" class="card-image" />
-    <h2>Helping Hands Food Bank</h2>
-    <p>Collects and distributes food to families facing food insecurity across the local community.</p>
-  </article>
+  <% organizations.forEach((organization) => { %>
+    <article class="card">
+      <h2><%= organization.name %></h2>
+      <p><%= organization.description %></p>
+      <p><strong>Contact:</strong> <%= organization.contact_email %></p>
+    </article>
+  <% }) %>
 </section>
 
 <%- include('partials/footer') %>

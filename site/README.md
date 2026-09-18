@@ -1,59 +1,68 @@
-# Service Connect — CSE 340 W01 Site
+# Service Connect - CSE 340 W01 Site
 
 Node.js + Express + EJS site with Home, Organizations, Service Projects, and
-Categories pages.
+Categories pages backed by a PostgreSQL database.
 
 ## Run locally
 
-```bash
-npm install
-npm start
-```
+1. Install dependencies:
 
-Then open http://localhost:3000
+   ```bash
+   npm install
+   ```
+
+2. Create a local `.env` file from `.env.example` and update `DATABASE_URL`:
+
+   ```bash
+   PORT=3000
+   DATABASE_URL=postgres://username:password@localhost:5432/service_connect
+   DATABASE_SSL=false
+   ```
+
+3. Create and seed the database using `src/setup.sql`.
+
+4. Start the app:
+
+   ```bash
+   npm start
+   ```
+
+Then open http://localhost:3000.
 
 ## Project structure
 
-```
+```text
 server.js               Express app and routes
+src/
+  database.js           PostgreSQL connection pool
+  setup.sql             Database schema and seed data
+  models/
+    categories.js
+    organizations.js
+    projects.js
 views/
   home.ejs
   organizations.ejs
   projects.ejs
   categories.ejs
   partials/
-    header.ejs           nav bar, opens <html>/<body>, uses title variable
-    footer.ejs            copyright, closes </body>/</html>
+    header.ejs          Navigation and opening HTML
+    footer.ejs          Footer and closing HTML
 public/
-  css/style.css          site stylesheet
-  images/                organization images (SVG placeholders)
-.env                     PORT=3000 (not committed to GitHub)
-.env.example             template for required env vars
+  css/style.css         Site stylesheet
+.env.example            Template for required environment variables
 ```
-
-## Deploying to GitHub
-
-1. `git init` (if not already a repo)
-2. `git add .`
-3. Confirm `.env` is NOT staged — it's excluded by `.gitignore`.
-4. `git commit -m "Initial site with home, organizations, projects, categories"`
-5. Create a new repo on GitHub, then:
-   ```bash
-   git remote add origin <your-repo-url>
-   git branch -M main
-   git push -u origin main
-   ```
 
 ## Deploying to Render.com
 
-1. Log in to Render, click **New +** → **Web Service**.
-2. Connect your GitHub repository.
+1. Log in to Render and create a PostgreSQL database.
+2. Create a new Web Service connected to your GitHub repository.
 3. Settings:
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-4. Add an environment variable `PORT` is provided automatically by Render,
-   so no extra env vars are required for this project.
-5. Deploy, then visit the generated `onrender.com` URL to confirm all four
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+4. Add the database connection string as `DATABASE_URL`.
+5. Leave `DATABASE_SSL` unset for Render PostgreSQL so SSL is enabled.
+6. Deploy, then visit the generated `onrender.com` URL to confirm all four
    pages (`/`, `/organizations`, `/projects`, `/categories`) load correctly.
 
 ## Submission checklist
@@ -61,4 +70,6 @@ public/
 - [ ] GitHub repo URL
 - [ ] Render deployed site URL
 - [ ] `.env` confirmed absent from GitHub repo
-- [ ] All four pages + nav links working locally and on Render
+- [ ] `DATABASE_URL` configured locally and on Render
+- [ ] `DATABASE_SSL=false` used only for non-SSL local databases
+- [ ] All four pages and nav links working locally and on Render
