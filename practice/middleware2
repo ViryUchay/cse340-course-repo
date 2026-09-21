@@ -1,0 +1,22 @@
+// Middleware to determine user role
+app.use((req, res, next) => {
+    // Set user role based on query parameter or default to guest
+    res.locals.userRole = req.query.role || 'guest';
+    res.locals.timestamp = new Date().toISOString();
+    next();
+});
+
+// Middleware that uses the role data
+app.use((req, res, next) => {
+    console.log(`User role: ${res.locals.userRole}`);
+    next();
+});
+
+// Route handler that uses the data
+app.get('/dashboard', (req, res) => {
+    res.send(`
+        <h1>Dashboard</h1>
+        <p>Role: ${res.locals.userRole}</p>
+        <p>Time: ${res.locals.timestamp}</p>
+    `);
+});

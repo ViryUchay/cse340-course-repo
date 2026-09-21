@@ -1,0 +1,23 @@
+// Middleware that conditionally continues or stops
+app.use((req, res, next) => {
+    if (!req.headers['authorization']) {
+        // Create error and skip to error handler
+        const err = new Error('Authorization header required');
+        err.status = 401;
+        return next(err);
+    }
+    
+    // All good, continue to next middleware
+    next();
+});
+
+// This only runs if authorization header exists
+app.use((req, res, next) => {
+    console.log('User is authenticated');
+    next();
+});
+
+// Error handler catches authentication failures
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).send(err.message);
+});

@@ -1,0 +1,16 @@
+/ Generic middleware - logs all requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next(); // Continue to next middleware
+});
+
+// Route handler - ends the request-response cycle
+app.get('/home', (req, res) => {
+    res.send('Welcome home!');
+});
+
+// Error handler - processes errors
+app.use((err, req, res, next) => {
+    console.error(err.message);
+    res.status(500).send('Something went wrong!');
+});

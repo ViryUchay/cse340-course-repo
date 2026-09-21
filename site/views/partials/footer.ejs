@@ -1,16 +1,20 @@
-  </main>
-  <footer class="site-footer">
-    <div class="footer-container">
-      <p>&copy; <%= new Date().getFullYear() %> Service Connect. All rights reserved.</p>
-    </div>
-  </footer>
-  <script>
-    const navToggle = document.getElementById('navToggle');
-    const siteNav = document.getElementById('siteNav');
-    navToggle.addEventListener('click', () => {
-      const isOpen = siteNav.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', isOpen);
-    });
-  </script>
+</main>
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> CSE 340 Service Network.
+      <% if (NODE_ENV==='development' ) { %>
+        (Development mode)
+        <% } %>
+
+  </p>
+</footer>
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const siteNav = document.getElementById('siteNav');
+  navToggle.addEventListener('click', () => {
+    const isOpen = siteNav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+</script>
 </body>
+
 </html>
