@@ -38,12 +38,20 @@ h1, h2, h3 {
 
 a {
   color: var(--color-primary);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
 a:hover,
 a:focus {
   text-decoration: underline;
+}
+
+.site-logo,
+.site-nav a,
+.btn,
+.tag-badge {
+  text-decoration: none;
 }
 
 img {
@@ -85,18 +93,6 @@ img {
   color: var(--color-accent);
 }
 
-a {
-  color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-.site-logo,
-.site-nav a,
-.btn,
-.tag-badge {
-  text-decoration: none;
-}
 .site-nav ul {
   list-style: none;
   display: flex;
@@ -274,6 +270,34 @@ a {
 }
 
 /* ==========================================================================
+   Accessibility: focus states and skip link
+   ========================================================================== */
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.site-header :focus-visible,
+.site-footer :focus-visible {
+  outline-color: var(--color-accent);
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+  padding: 0.5rem 1rem;
+  z-index: 20;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* ==========================================================================
    Responsive: mobile navigation
    ========================================================================== */
 
@@ -286,11 +310,13 @@ a {
     width: 100%;
     max-height: 0;
     overflow: hidden;
+    visibility: hidden;
     transition: max-height 0.25s ease;
   }
 
   .site-nav.open {
     max-height: 300px;
+    visibility: visible;
   }
 
   .site-nav ul {
@@ -311,35 +337,4 @@ a {
   .hero h1 {
     font-size: 1.75rem;
   }
-}
-:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 3px;
-}
-
-.site-header :focus-visible,
-.site-footer :focus-visible {
-  outline-color: var(--color-accent);
-}
-
-.site-nav {
-  visibility: hidden;
-}
-
-.site-nav.open {
-  visibility: visible;
-}
-
-.skip-link {
-  position: absolute;
-  left: -999px;
-  top: 0;
-  background: var(--color-accent);
-  color: var(--color-primary-dark);
-  padding: 0.5rem 1rem;
-  z-index: 20;
-}
-
-.skip-link:focus {
-  left: 0;
 }
