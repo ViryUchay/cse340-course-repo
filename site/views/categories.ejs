@@ -1,18 +1,10 @@
 <%- include('partials/header') %>
-
-  <h1>
-    <%= title %>
-  </h1>
-  <p class="page-intro">Service projects are organized into the following categories.</p>
-
-  <section class="card-grid">
-    <% categories.forEach((category)=> { %>
-      <article class="card">
-        <h2>
-          <%= category.name %>
-        </h2>
-      </article>
-      <% }) %>
-  </section>
-
-  <%- include('partials/footer') %>
+<main>
+  <h1>Categories</h1>
+  <ul>
+    <% categories.forEach(category => { %>
+      <li><a href="/category/<%= category.category_id %>"><%= category.name %></a></li>
+    <% }) %>
+  </ul>
+</main>
+<%- include('partials/footer') %>

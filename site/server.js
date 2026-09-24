@@ -2,13 +2,13 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { getCategories } from './src/models/categories.js';
-import { getOrganizations } from './src/models/organizations.js';
-import { getProjects } from './src/models/projects.js';
-import pool from './src/database.js';
+import categoryRoutes from './src/routes/categoryRoutes.js';
+import organizationRoutes from './src/routes/organizationRoutes.js';
+import projectRoutes from './src/routes/projectRoutes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,16 +22,16 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Middleware to log all incoming requests
 app.use((req, res, next) => {
-    if (NODE_ENV === 'development') {
-        console.log(`${req.method} ${req.url}`);
-    }
-    next(); // Pass control to the next middleware or route
+  if (NODE_ENV === 'development') {
+    console.log(`${req.method} ${req.url}`);
+  }
+  next(); // Pass control to the next middleware or route
 });
 
 // Middleware to make NODE_ENV available to all templates
 app.use((req, res, next) => {
-    res.locals.NODE_ENV = NODE_ENV;
-    next();
+  res.locals.NODE_ENV = NODE_ENV;
+  next();
 });
 
 // Static middleware to serve the public folder (css, images, client js)
@@ -43,38 +43,21 @@ app.get('/', asyncHandler(async (req, res) => {
   res.render('home', { title });
 }));
 
-// Organizations page route
-app.get('/organizations', asyncHandler(async (req, res) => {
-  const title = 'Organizations';
-  const organizations = await getOrganizations();
-  res.render('organizations', { title, organizations });
-}));
+app.use('/', organizationRoutes);
+app.use('/', projectRoutes);
+app.use('/', categoryRoutes);
 
-// Service Projects page route
-app.get('/projects', asyncHandler(async (req, res) => {
-  const title = 'Service Projects';
-  const projects = await getProjects();
-  res.render('projects', { title, projects });
-}));
 
-// Service Project Categories page route
-app.get('/categories', asyncHandler(async (req, res) => {
-  const title = 'Categories';
-  const categories = await getCategories();
-  res.render('categories', { title, categories });
-}));
-
-app.get('/health/db', asyncHandler(async (req, res) => {
-  const result = await pool.query('SELECT NOW() AS database_time');
-  res.json({
-    status: 'ok',
-    databaseTime: result.rows[0].database_time
-  });
-}));
+app.use((req, res) => {
+  res.status(404).render('404', { title: 'Page Not Found' });
+});
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).send('Something went wrong while loading this page.');
+  const status = err.status || 500;
+  res.status(status).render(status === 404 ? '404' : '500', {
+    title: status === 404 ? 'Page Not Found' : 'Server Error'
+  });
 });
 
 app.listen(port, () => {
