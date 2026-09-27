@@ -1,16 +1,36 @@
 <%- include('partials/header') %>
 
-<h1><%= title %></h1>
-<p class="page-intro">Browse organizations you can volunteer with. Each partners with local communities on ongoing service work.</p>
+<main>
+    <h1><%= title %></h1>
 
-<section class="card-grid">
-  <% organizations.forEach((organization) => { %>
-    <article class="card">
-      <h2><a href="/organization/<%= organization.organization_id %>"><%= organization.name %></a></h2>
-      <p><%= organization.description %></p>
-      <p><strong>Contact:</strong> <%= organization.contact_email %></p>
-    </article>
-  <% }) %>
-</section>
+    <p class="page-intro">
+        Browse organizations you can volunteer with. Each partner works with local communities on ongoing service work.
+    </p>
+
+    <section class="card-grid">
+        <% organizations.forEach((organization) => { %>
+            <article class="card">
+                <img
+                    src="/images/<%= organization.logo_filename %>"
+                    alt="<%= organization.name %> logo"
+                    class="organization-logo"
+                >
+
+                <h2>
+                    <a href="/organization/<%= organization.organization_id %>">
+                        <%= organization.name %>
+                    </a>
+                </h2>
+
+                <p><%= organization.description %></p>
+
+                <p>
+                    <strong>Contact:</strong>
+                    <%= organization.contact_email %>
+                </p>
+            </article>
+        <% }); %>
+    </section>
+</main>
 
 <%- include('partials/footer') %>

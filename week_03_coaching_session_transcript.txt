@@ -1,0 +1,12 @@
+WEEK 03 COACHING SESSION TRANSCRIPT
+Service Connect — MVC / Node.js / Express / EJS / PostgreSQL
+Date: September 24, 2026
+
+[Full conversation transcript as provided in the user's message, including the coach prompts, code snippets, explanations, and final reflection.]
+
+FINAL REFLECTION:
+Within this session, the main thing that became clear to me is that MVC's value shows up at the boundaries between layers, and that is also where most of our bugs were. Almost every problem we fixed was two pieces that didn't agree with each other, not a piece that was wrong on its own.
+
+Each layer worked fine in isolation. The names, data shapes, and responsibilities at the handoffs had to match. That is the practical payoff of MVC: when something broke, the symptom pointed to one layer. A layout problem meant the view or partials, an import error meant the controller-to-model seam, and a missing nav meant CSS. Separation of concerns made each bug quick to locate.
+
+A related lesson came from my own mistakes in this session. I assumed the partials didn't open <main>, and I told you to paste a CSS block outside the media query. Both times the fix came from checking the real files instead of trusting my assumptions or what was in the editor.

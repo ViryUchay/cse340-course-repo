@@ -1,39 +1,55 @@
 import pool from '../database.js';
 
 export async function getCategories() {
+  try {
     const result = await pool.query('SELECT * FROM categories ORDER BY name');
     return result.rows;
+  } catch (err) {
+    throw new Error(`Database error in getCategories: ${err.message}`);
+  }
 }
 
 export async function getCategoryById(categoryId) {
+  try {
     const result = await pool.query(
-        'SELECT * FROM categories WHERE category_id = $1',
-        [categoryId]
+      'SELECT * FROM categories WHERE id = $1',
+      [categoryId]
     );
-    return result.rows[0];
+    return result.rows.length ? result.rows[0] : null;
+  } catch (err) {
+    throw new Error(`Database error in getCategoryById: ${err.message}`);
+  }
 }
 
 export async function getProjectsByCategory(categoryId) {
+  try {
     const result = await pool.query(
-        `SELECT sp.*, o.name AS organization_name
-         FROM service_project sp
-         JOIN project_categories pc ON sp.project_id = pc.project_id
-         JOIN organization o ON sp.organization_id = o.organization_id
-         WHERE pc.category_id = $1
-         ORDER BY sp.project_date`,
-        [categoryId]
+      `SELECT sp.*, o.name AS organization_name
+       FROM service_project sp
+       JOIN project_categories pc ON sp.id = pc.project_id
+       JOIN organization o ON sp.organization_id = o.id
+       WHERE pc.category_id = $1
+       ORDER BY sp.project_date`,
+      [categoryId]
     );
     return result.rows;
+  } catch (err) {
+    throw new Error(`Database error in getProjectsByCategory: ${err.message}`);
+  }
 }
 
 export async function getCategoriesByProject(projectId) {
+  try {
     const result = await pool.query(
-        `SELECT c.*
-         FROM categories c
-         JOIN project_categories pc ON c.category_id = pc.category_id
-         WHERE pc.project_id = $1
-         ORDER BY c.name`,
-        [projectId]
+      `SELECT c.*
+       FROM categories c
+       JOIN project_categories pc ON c.id = pc.category_id
+       WHERE pc.project_id = $1
+       ORDER BY c.name`,
+      [projectId]
     );
     return result.rows;
+  } catch (err) {
+    throw new Error(`Database error in getCategoriesByProject: ${err.message}`);
+  }
 }
