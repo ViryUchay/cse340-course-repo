@@ -63,4 +63,3 @@ export async function getCategoriesByProject(projectId) {
     throw new Error(`Database error in getCategoriesByProject: ${err.message}`);
   }
 }
-```

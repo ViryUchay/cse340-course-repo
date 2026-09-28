@@ -1,4 +1,3 @@
-```js
 import {
     getCategories,
     getCategoryById,
@@ -47,4 +46,3 @@ export async function showCategoryDetailsPage(req, res, next) {
         next(error);
     }
 }
-```
