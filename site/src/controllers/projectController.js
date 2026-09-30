@@ -1,9 +1,9 @@
-import { getUpcomingProjects, getProjectDetails } from '../models/projects.js';
+import { getAllProjects, getProjectDetails } from '../models/projects.js';
 import { getCategoriesByProject } from '../models/categories.js';
 
 const showProjectsPage = async (req, res, next) => {
     try {
-        const projects = await getUpcomingProjects(5);
+        const projects = await getAllProjects();
         res.render('projects', { title: 'Service Projects', projects });
     } catch (error) {
         next(error);

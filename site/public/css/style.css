@@ -30,7 +30,9 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-heading);
   color: var(--color-primary-dark);
   line-height: 1.25;
@@ -338,10 +340,79 @@ img {
     font-size: 1.75rem;
   }
 }
+
 .organization-logo {
-    width: 90px;
-    height: 90px;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto 1rem;
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+.organization-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.organization-info {
+  flex: 1;
+}
+
+.organization-detail-logo {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.project-list {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.intro {
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.project-card {
+    background: #f4f7f4;
+    border-left: 4px solid #d98c2b;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+
+.project-header {
+    font-size: 15px;
+    margin: 0 0 8px 0;
+}
+
+.project-header .date {
+    font-weight: 600;
+    color: #222;
+}
+
+.project-header a {
+    color: #5b3fa6;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.project-header .org {
+    color: #555;
+    font-weight: 400;
+}
+
+.project-desc {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #222;
+}
+
+.project-location {
+    margin: 0;
+    font-size: 13px;
+    color: #555;
 }
