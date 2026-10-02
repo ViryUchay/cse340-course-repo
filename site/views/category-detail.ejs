@@ -3,6 +3,13 @@
   <h1>
     <%= category.name %>
   </h1>
+
+  <p>
+    <a href="/edit-category/<%= category.category_id %>" class="btn">
+      Edit Category
+    </a>
+  </p>
+
   <p class="page-intro">Service projects connected to this category.</p>
 
   <% if (projects.length===0) { %>

@@ -1,59 +1,57 @@
 <%- include('partials/header') %>
 
-<main>
-    <h1>Service Projects</h1>
+    <main>
+        <h1>Service Projects</h1>
 
-    <p class="intro">
-        Explore the service projects available through our partner organizations.
-    </p>
+        <a href="/new-project" class="btn">Create New Service Project</a>
+        <p class="intro">
+            Explore the service projects available through our partner organizations.
+        </p>
 
-    <div class="project-list">
+        <div class="project-list">
 
-        <% if (projects.length === 0) { %>
+            <% if (projects.length===0) { %>
 
-            <p>No service projects are currently available.</p>
+                <p>No service projects are currently available.</p>
 
-        <% } else { %>
+                <% } else { %>
 
-            <% projects.forEach((project) => { %>
+                    <% projects.forEach((project)=> { %>
 
-                <article class="project-card">
+                        <article class="project-card">
 
-                    <p class="project-header">
+                            <p class="project-header">
 
-                        <span class="date">
-                            <%= new Date(project.project_date).toLocaleDateString('en-GB', {
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric'
-                            }) %>:
-                        </span>
+                                <span class="date">
+                                    <%= new Date(project.project_date).toLocaleDateString('en-GB', { day: 'numeric' ,
+                                        month: 'long' , year: 'numeric' }) %>:
+                                </span>
 
-                        <a href="/project/<%= project.project_id %>">
-                            <%= project.title %>
-                        </a>
+                                <a href="/project/<%= project.project_id %>">
+                                    <%= project.title %>
+                                </a>
 
-                        <span class="org">
-                            (<%= project.organization_name %>)
-                        </span>
+                                <span class="org">
+                                    (<%= project.organization_name %>)
+                                </span>
 
-                    </p>
+                            </p>
 
-                    <p class="project-desc">
-                        <%= project.description %>
-                    </p>
+                            <p class="project-desc">
+                                <%= project.description %>
+                            </p>
 
-                    <p class="project-location">
-                        Location: <%= project.location %>
-                    </p>
+                            <p class="project-location">
+                                Location: <%= project.location %>
+                            </p>
 
-                </article>
+                        </article>
 
-            <% }) %>
+                        <% }) %>
 
-        <% } %>
+                            <% } %>
 
-    </div>
-</main>
+        </div>
+    </main>
 
-<%- include('partials/footer') %>
+    <%- include('partials/footer') %>

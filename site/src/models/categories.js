@@ -26,6 +26,37 @@ export async function getCategoryById(categoryId) {
   }
 }
 
+export async function createCategory(name) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO categories (name)
+       VALUES ($1)
+       RETURNING *`,
+      [name]
+    );
+
+    return result.rows[0];
+  } catch (err) {
+    throw new Error(`Database error in createCategory: ${err.message}`);
+  }
+}
+
+export async function updateCategory(categoryId, name) {
+  try {
+    const result = await pool.query(
+      `UPDATE categories
+       SET name = $1
+       WHERE category_id = $2
+       RETURNING *`,
+      [name, categoryId]
+    );
+
+    return result.rows.length ? result.rows[0] : null;
+  } catch (err) {
+    throw new Error(`Database error in updateCategory: ${err.message}`);
+  }
+}
+
 export async function getProjectsByCategory(categoryId) {
   try {
     const result = await pool.query(
