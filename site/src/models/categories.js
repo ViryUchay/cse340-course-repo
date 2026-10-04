@@ -1,6 +1,6 @@
 import pool from '../database.js';
 
-export async function getCategories() {
+const getCategories = async () => {
   try {
     const result = await pool.query(
       'SELECT * FROM categories ORDER BY name'
@@ -9,14 +9,14 @@ export async function getCategories() {
   } catch (err) {
     throw new Error(`Database error in getCategories: ${err.message}`);
   }
-}
+};
 
-export async function getCategoryById(categoryId) {
+const getCategoryById = async (categoryId) => {
   try {
     const result = await pool.query(
       `SELECT *
-       FROM categories
-       WHERE category_id = $1`,
+             FROM categories
+             WHERE category_id = $1`,
       [categoryId]
     );
 
@@ -24,14 +24,14 @@ export async function getCategoryById(categoryId) {
   } catch (err) {
     throw new Error(`Database error in getCategoryById: ${err.message}`);
   }
-}
+};
 
-export async function createCategory(name) {
+const createCategory = async (name) => {
   try {
     const result = await pool.query(
       `INSERT INTO categories (name)
-       VALUES ($1)
-       RETURNING *`,
+             VALUES ($1)
+             RETURNING *`,
       [name]
     );
 
@@ -39,15 +39,15 @@ export async function createCategory(name) {
   } catch (err) {
     throw new Error(`Database error in createCategory: ${err.message}`);
   }
-}
+};
 
-export async function updateCategory(categoryId, name) {
+const updateCategory = async (categoryId, name) => {
   try {
     const result = await pool.query(
       `UPDATE categories
-       SET name = $1
-       WHERE category_id = $2
-       RETURNING *`,
+             SET name = $1
+             WHERE category_id = $2
+             RETURNING *`,
       [name, categoryId]
     );
 
@@ -55,19 +55,19 @@ export async function updateCategory(categoryId, name) {
   } catch (err) {
     throw new Error(`Database error in updateCategory: ${err.message}`);
   }
-}
+};
 
-export async function getProjectsByCategory(categoryId) {
+const getProjectsByCategory = async (categoryId) => {
   try {
     const result = await pool.query(
       `SELECT sp.*, o.name AS organization_name
-       FROM service_project sp
-       JOIN project_categories pc
-         ON sp.project_id = pc.project_id
-       JOIN organization o
-         ON sp.organization_id = o.organization_id
-       WHERE pc.category_id = $1
-       ORDER BY sp.project_date`,
+             FROM service_project sp
+             JOIN project_categories pc
+               ON sp.project_id = pc.project_id
+             JOIN organization o
+               ON sp.organization_id = o.organization_id
+             WHERE pc.category_id = $1
+             ORDER BY sp.project_date`,
       [categoryId]
     );
 
@@ -75,17 +75,17 @@ export async function getProjectsByCategory(categoryId) {
   } catch (err) {
     throw new Error(`Database error in getProjectsByCategory: ${err.message}`);
   }
-}
+};
 
-export async function getCategoriesByProject(projectId) {
+const getCategoriesByProject = async (projectId) => {
   try {
     const result = await pool.query(
       `SELECT c.*
-       FROM categories c
-       JOIN project_categories pc
-         ON c.category_id = pc.category_id
-       WHERE pc.project_id = $1
-       ORDER BY c.name`,
+             FROM categories c
+             JOIN project_categories pc
+               ON c.category_id = pc.category_id
+             WHERE pc.project_id = $1
+             ORDER BY c.name`,
       [projectId]
     );
 
@@ -93,4 +93,45 @@ export async function getCategoriesByProject(projectId) {
   } catch (err) {
     throw new Error(`Database error in getCategoriesByProject: ${err.message}`);
   }
-}
+};
+
+const updateProjectCategories = async (projectId, categoryIds) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    await client.query(
+      `DELETE FROM project_categories
+             WHERE project_id = $1`,
+      [projectId]
+    );
+
+    for (const categoryId of categoryIds) {
+      await client.query(
+        `INSERT INTO project_categories (project_id, category_id)
+                 VALUES ($1, $2)`,
+        [projectId, categoryId]
+      );
+    }
+
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw new Error(
+      `Database error in updateProjectCategories: ${err.message}`
+    );
+  } finally {
+    client.release();
+  }
+};
+
+export {
+  getCategories,
+  getCategoryById,
+  createCategory,
+  updateCategory,
+  getProjectsByCategory,
+  getCategoriesByProject,
+  updateProjectCategories
+};

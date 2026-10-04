@@ -1,3 +1,5 @@
+import { validationResult } from 'express-validator';
+
 import {
     getOrganizationById,
     getOrganizations,
@@ -6,7 +8,7 @@ import {
     updateOrganization
 } from '../models/organizations.js';
 
-export async function showOrganizationsPage(req, res, next) {
+const showOrganizationsPage = async (req, res, next) => {
     try {
         const organizations = await getOrganizations();
 
@@ -17,9 +19,9 @@ export async function showOrganizationsPage(req, res, next) {
     } catch (error) {
         next(error);
     }
-}
+};
 
-export async function showOrganizationDetailsPage(req, res, next) {
+const showOrganizationDetailsPage = async (req, res, next) => {
     try {
         const organizationId = Number.parseInt(req.params.id, 10);
 
@@ -47,10 +49,9 @@ export async function showOrganizationDetailsPage(req, res, next) {
     } catch (error) {
         next(error);
     }
-}
+};
 
-// Show the create organization form
-export function showNewOrganizationPage(req, res) {
+const showNewOrganizationPage = (req, res) => {
     res.render('new-organization', {
         title: 'Create New Organization',
         errors: [],
@@ -61,45 +62,21 @@ export function showNewOrganizationPage(req, res) {
             logo_filename: ''
         }
     });
-}
+};
 
-// Create a new organization
-export async function createOrganizationController(req, res, next) {
+const createOrganizationController = async (req, res, next) => {
     try {
+        const errors = validationResult(req).array();
+
         const name = req.body.name?.trim() || '';
         const description = req.body.description?.trim() || '';
         const contactEmail = req.body.contact_email?.trim() || '';
         const logoFilename = req.body.logo_filename?.trim() || '';
 
-        const errors = [];
-
-        // Server-side validation
-        if (!name) {
-            errors.push('Organization name is required.');
-        } else if (name.length > 150) {
-            errors.push('Organization name must not exceed 150 characters.');
-        }
-
-        if (!description) {
-            errors.push('Organization description is required.');
-        }
-
-        if (!contactEmail) {
-            errors.push('Contact email is required.');
-        } else if (contactEmail.length > 255) {
-            errors.push('Contact email must not exceed 255 characters.');
-        }
-
-        if (!logoFilename) {
-            errors.push('Logo filename is required.');
-        } else if (logoFilename.length > 255) {
-            errors.push('Logo filename must not exceed 255 characters.');
-        }
-
         if (errors.length > 0) {
             return res.status(400).render('new-organization', {
                 title: 'Create New Organization',
-                errors,
+                errors: errors.map(error => error.msg),
                 organization: {
                     name,
                     description,
@@ -120,10 +97,9 @@ export async function createOrganizationController(req, res, next) {
     } catch (error) {
         next(error);
     }
-}
+};
 
-// Show the edit organization form
-export async function showEditOrganizationPage(req, res, next) {
+const showEditOrganizationPage = async (req, res, next) => {
     try {
         const organizationId = Number.parseInt(req.params.id, 10);
 
@@ -149,19 +125,17 @@ export async function showEditOrganizationPage(req, res, next) {
     } catch (error) {
         next(error);
     }
-}
+};
 
-// Update an existing organization
-export async function updateOrganizationController(req, res, next) {
+const updateOrganizationController = async (req, res, next) => {
     try {
         const organizationId = Number.parseInt(req.params.id, 10);
+        const errors = validationResult(req).array();
 
         const name = req.body.name?.trim() || '';
         const description = req.body.description?.trim() || '';
         const contactEmail = req.body.contact_email?.trim() || '';
         const logoFilename = req.body.logo_filename?.trim() || '';
-
-        const errors = [];
 
         if (Number.isNaN(organizationId)) {
             return res.status(404).render('404', {
@@ -169,33 +143,10 @@ export async function updateOrganizationController(req, res, next) {
             });
         }
 
-        // Server-side validation
-        if (!name) {
-            errors.push('Organization name is required.');
-        } else if (name.length > 150) {
-            errors.push('Organization name must not exceed 150 characters.');
-        }
-
-        if (!description) {
-            errors.push('Organization description is required.');
-        }
-
-        if (!contactEmail) {
-            errors.push('Contact email is required.');
-        } else if (contactEmail.length > 255) {
-            errors.push('Contact email must not exceed 255 characters.');
-        }
-
-        if (!logoFilename) {
-            errors.push('Logo filename is required.');
-        } else if (logoFilename.length > 255) {
-            errors.push('Logo filename must not exceed 255 characters.');
-        }
-
         if (errors.length > 0) {
             return res.status(400).render('edit-organization', {
                 title: 'Edit Organization',
-                errors,
+                errors: errors.map(error => error.msg),
                 organization: {
                     organization_id: organizationId,
                     name,
@@ -224,4 +175,13 @@ export async function updateOrganizationController(req, res, next) {
     } catch (error) {
         next(error);
     }
-}
+};
+
+export {
+    showOrganizationsPage,
+    showOrganizationDetailsPage,
+    showNewOrganizationPage,
+    createOrganizationController,
+    showEditOrganizationPage,
+    updateOrganizationController
+};
