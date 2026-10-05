@@ -1,3 +1,5 @@
+import { validationResult } from 'express-validator';
+
 import {
     getCategories,
     getCategoryById,
@@ -49,7 +51,6 @@ export async function showCategoryDetailsPage(req, res, next) {
     }
 }
 
-// Show the create category form
 export function showNewCategoryPage(req, res) {
     res.render('new-category', {
         title: 'Create New Category',
@@ -60,30 +61,24 @@ export function showNewCategoryPage(req, res) {
     });
 }
 
-// Create a new category
 export async function createCategoryController(req, res, next) {
     try {
+        const errors = validationResult(req).array();
         const name = req.body.name?.trim() || '';
-        const errors = [];
-
-        // Server-side validation
-        if (!name) {
-            errors.push('Category name is required.');
-        } else if (name.length < 3) {
-            errors.push('Category name must be at least 3 characters.');
-        } else if (name.length > 100) {
-            errors.push('Category name must not exceed 100 characters.');
-        }
 
         if (errors.length > 0) {
             return res.status(400).render('new-category', {
                 title: 'Create New Category',
-                errors,
-                category: { name }
+                errors: errors.map(error => error.msg),
+                category: {
+                    name
+                }
             });
         }
 
         await createCategory(name);
+
+        req.flash('success', 'Category created successfully.');
 
         res.redirect('/categories');
     } catch (error) {
@@ -91,7 +86,6 @@ export async function createCategoryController(req, res, next) {
     }
 }
 
-// Show the edit category form
 export async function showEditCategoryPage(req, res, next) {
     try {
         const categoryId = Number.parseInt(req.params.id, 10);
@@ -120,12 +114,12 @@ export async function showEditCategoryPage(req, res, next) {
     }
 }
 
-// Update an existing category
 export async function updateCategoryController(req, res, next) {
     try {
+
         const categoryId = Number.parseInt(req.params.id, 10);
+        const errors = validationResult(req).array();
         const name = req.body.name?.trim() || '';
-        const errors = [];
 
         if (Number.isNaN(categoryId)) {
             return res.status(404).render('404', {
@@ -133,19 +127,10 @@ export async function updateCategoryController(req, res, next) {
             });
         }
 
-        // Server-side validation
-        if (!name) {
-            errors.push('Category name is required.');
-        } else if (name.length < 3) {
-            errors.push('Category name must be at least 3 characters.');
-        } else if (name.length > 100) {
-            errors.push('Category name must not exceed 100 characters.');
-        }
-
         if (errors.length > 0) {
             return res.status(400).render('edit-category', {
                 title: 'Edit Category',
-                errors,
+                errors: errors.map(error => error.msg),
                 category: {
                     category_id: categoryId,
                     name
@@ -153,13 +138,18 @@ export async function updateCategoryController(req, res, next) {
             });
         }
 
-        const updatedCategory = await updateCategory(categoryId, name);
+        const updatedCategory = await updateCategory(
+            categoryId,
+            name
+        );
 
         if (!updatedCategory) {
             return res.status(404).render('404', {
                 title: 'Category Not Found'
             });
         }
+
+        req.flash('success', 'Category updated successfully.');
 
         res.redirect(`/category/${categoryId}`);
     } catch (error) {

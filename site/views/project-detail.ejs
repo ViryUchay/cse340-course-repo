@@ -1,90 +1,97 @@
 <%- include('partials/header') %>
 
   <main>
-    <article class="content-section">
 
-      <h1>
-        <%= project.title %>
-      </h1>
+    <% if (successMessages && successMessages.length> 0) { %>
+      <div class="flash-message success" role="alert">
+        <%= successMessages[0] %>
+      </div>
+      <% } %>
 
-      <p>
-        <%= project.description %>
-      </p>
+        <article class="content-section">
 
-      <p>
-        <strong>Organization:</strong>
-        <a href="/organization/<%= project.organization_id %>">
-          <%= project.organization_name %>
-        </a>
-      </p>
+          <h1>
+            <%= project.title %>
+          </h1>
 
-      <p>
-        <strong>Location:</strong>
-        <%= project.location %>
-      </p>
+          <p>
+            <%= project.description %>
+          </p>
 
-      <p>
-        <strong>Date:</strong>
-        <%= project.project_date.toDateString() %>
-      </p>
+          <p>
+            <strong>Organization:</strong>
+            <a href="/organization/<%= project.organization_id %>">
+              <%= project.organization_name %>
+            </a>
+          </p>
 
-      <p>
-        <a href="/edit-project/<%= project.project_id %>" class="btn">
-          Edit Project
-        </a>
-      </p>
+          <p>
+            <strong>Location:</strong>
+            <%= project.location %>
+          </p>
 
-      <section class="project-tags" aria-labelledby="category-tags-heading">
-        <h2 id="category-tags-heading">Categories</h2>
+          <p>
+            <strong>Date:</strong>
+            <%= project.project_date.toDateString() %>
+          </p>
 
-        <% if (categories.length> 0) { %>
-          <div class="tags-container">
-            <% categories.forEach((category)=> { %>
-              <a class="tag-badge" href="/category/<%= category.category_id %>">
-                <%= category.name %>
-              </a>
-              <% }) %>
-          </div>
-          <% } else { %>
-            <p>This project does not have category tags yet.</p>
-            <% } %>
-      </section>
+          <p>
+            <a href="/edit-project/<%= project.project_id %>" class="btn">
+              Edit Project
+            </a>
+          </p>
 
-    </article>
+          <section class="project-tags" aria-labelledby="category-tags-heading">
+            <h2 id="category-tags-heading">Categories</h2>
 
-    <section class="content-section">
-      <h2>Reassign Categories</h2>
-
-      <form action="/project/<%= project.project_id %>/categories" method="POST">
-        <% if (allCategories.length> 0) { %>
-
-          <% allCategories.forEach((category)=> { %>
-            <div class="form-group">
-              <label>
-                <input type="checkbox" name="category_ids" value="<%= category.category_id %>" <%=categories.some(
-                  selectedCategory=>
-                Number(selectedCategory.category_id) ===
-                Number(category.category_id)
-                ) ? 'checked' : '' %>
-                >
-                <%= category.name %>
-              </label>
-            </div>
-            <% }) %>
-
+            <% if (categories.length> 0) { %>
+              <div class="tags-container">
+                <% categories.forEach((category)=> { %>
+                  <a class="tag-badge" href="/category/<%= category.category_id %>">
+                    <%= category.name %>
+                  </a>
+                  <% }) %>
+              </div>
               <% } else { %>
-                <p>No categories are available.</p>
+                <p>This project does not have category tags yet.</p>
                 <% } %>
+          </section>
 
-                  <button type="submit" class="btn">
-                    Save Categories
-                  </button>
-      </form>
-    </section>
+        </article>
 
-    <p>
-      <a href="/projects">Back to Service Projects</a>
-    </p>
+        <section class="content-section">
+          <h2>Reassign Categories</h2>
+
+          <form action="/project/<%= project.project_id %>/categories" method="POST">
+            <% if (allCategories.length> 0) { %>
+
+              <% allCategories.forEach((category)=> { %>
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" name="category_ids" value="<%= category.category_id %>" <%=categories.some(
+                      selectedCategory=>
+                    Number(selectedCategory.category_id) ===
+                    Number(category.category_id)
+                    ) ? 'checked' : '' %>
+                    >
+                    <%= category.name %>
+                  </label>
+                </div>
+                <% }) %>
+
+                  <% } else { %>
+                    <p>No categories are available.</p>
+                    <% } %>
+
+                      <button type="submit" class="btn">
+                        Save Categories
+                      </button>
+          </form>
+        </section>
+
+        <p>
+          <a href="/projects">Back to Service Projects</a>
+        </p>
   </main>
 
   <%- include('partials/footer') %>

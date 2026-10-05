@@ -25,4 +25,21 @@
       </nav>
     </div>
   </header>
-  <main class="site-main">
+
+<% if (successMessages && successMessages.length > 0) { %>
+    <div class="flash-messages success-message" role="status">
+        <% successMessages.forEach((message) => { %>
+            <p><%= message %></p>
+        <% }) %>
+    </div>
+<% } %>
+
+<% if (errorMessages && errorMessages.length > 0) { %>
+    <div class="flash-messages error-message" role="alert">
+        <% errorMessages.forEach((message) => { %>
+            <p><%= message %></p>
+        <% }) %>
+    </div>
+<% } %>
+
+<main class="site-main">

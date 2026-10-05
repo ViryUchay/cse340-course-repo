@@ -18,32 +18,36 @@ const projectValidation = [
         .trim()
         .notEmpty()
         .withMessage('Organization is required.')
-        .isInt()
+        .isInt({ min: 1 })
         .withMessage('Please select a valid organization.'),
 
     body('title')
         .trim()
         .notEmpty()
         .withMessage('Project title is required.')
-        .isLength({ max: 150 })
-        .withMessage('Project title must not exceed 150 characters.'),
+        .isLength({ min: 3, max: 150 })
+        .withMessage('Project title must be between 3 and 150 characters.'),
 
     body('description')
         .trim()
         .notEmpty()
-        .withMessage('Project description is required.'),
+        .withMessage('Project description is required.')
+        .isLength({ min: 3, max: 1000 })
+        .withMessage('Project description must be between 3 and 1000 characters.'),
 
     body('location')
         .trim()
         .notEmpty()
         .withMessage('Project location is required.')
-        .isLength({ max: 150 })
-        .withMessage('Project location must not exceed 150 characters.'),
+        .isLength({ min: 2, max: 150 })
+        .withMessage('Project location must be between 2 and 150 characters.'),
 
     body('project_date')
         .trim()
         .notEmpty()
         .withMessage('Project date is required.')
+        .isISO8601({ strict: true })
+        .withMessage('Please enter a valid project date.')
 ];
 
 router.get('/projects', showProjectsPage);

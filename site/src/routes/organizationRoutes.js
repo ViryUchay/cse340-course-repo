@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 
 import {
     showOrganizationsPage,
@@ -17,18 +17,22 @@ const organizationValidation = [
         .trim()
         .notEmpty()
         .withMessage('Organization name is required.')
-        .isLength({ max: 150 })
-        .withMessage('Organization name must not exceed 150 characters.'),
+        .isLength({ min: 3, max: 150 })
+        .withMessage('Organization name must be between 3 and 150 characters.'),
 
     body('description')
         .trim()
         .notEmpty()
-        .withMessage('Organization description is required.'),
+        .withMessage('Organization description is required.')
+        .isLength({ min: 3, max: 1000 })
+        .withMessage('Organization description must be between 3 and 1000 characters.'),
 
     body('contact_email')
         .trim()
         .notEmpty()
         .withMessage('Contact email is required.')
+        .isEmail()
+        .withMessage('Please enter a valid email address.')
         .isLength({ max: 255 })
         .withMessage('Contact email must not exceed 255 characters.'),
 
@@ -36,8 +40,8 @@ const organizationValidation = [
         .trim()
         .notEmpty()
         .withMessage('Logo filename is required.')
-        .isLength({ max: 255 })
-        .withMessage('Logo filename must not exceed 255 characters.')
+        .isLength({ min: 3, max: 255 })
+        .withMessage('Logo filename must be between 3 and 255 characters.')
 ];
 
 router.get('/organizations', showOrganizationsPage);

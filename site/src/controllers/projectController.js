@@ -89,6 +89,7 @@ const createProjectController = async (req, res, next) => {
             req.body.organization_id,
             10
         );
+
         const title = req.body.title?.trim() || '';
         const description = req.body.description?.trim() || '';
         const location = req.body.location?.trim() || '';
@@ -118,6 +119,8 @@ const createProjectController = async (req, res, next) => {
             location,
             projectDate
         );
+
+        req.flash('success', 'Service project created successfully.');
 
         res.redirect('/projects');
     } catch (error) {
@@ -168,10 +171,12 @@ const showEditProjectPage = async (req, res, next) => {
 const updateProjectController = async (req, res, next) => {
     try {
         const projectId = Number.parseInt(req.params.id, 10);
+
         const organizationId = Number.parseInt(
             req.body.organization_id,
             10
         );
+
         const errors = validationResult(req).array();
 
         const title = req.body.title?.trim() || '';
@@ -218,6 +223,8 @@ const updateProjectController = async (req, res, next) => {
             });
         }
 
+        req.flash('success', 'Service project updated successfully.');
+
         res.redirect(`/project/${projectId}`);
     } catch (error) {
         next(error);
@@ -253,6 +260,11 @@ const updateProjectCategoriesController = async (req, res, next) => {
             .filter(categoryId => !Number.isNaN(categoryId));
 
         await updateProjectCategories(projectId, categoryIds);
+
+        req.flash(
+            'success',
+            'Project categories updated successfully.'
+        );
 
         res.redirect(`/project/${projectId}`);
     } catch (error) {

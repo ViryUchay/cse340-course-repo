@@ -93,6 +93,8 @@ const createOrganizationController = async (req, res, next) => {
             logoFilename
         );
 
+        req.flash('success', 'Organization created successfully.');
+
         res.redirect('/organizations');
     } catch (error) {
         next(error);
@@ -170,6 +172,8 @@ const updateOrganizationController = async (req, res, next) => {
                 title: 'Organization Not Found'
             });
         }
+
+        req.flash('success', 'Organization updated successfully.');
 
         res.redirect(`/organization/${organizationId}`);
     } catch (error) {
