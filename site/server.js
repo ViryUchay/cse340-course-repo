@@ -9,6 +9,7 @@ import organizationRoutes from './src/routes/organizationRoutes.js';
 import projectRoutes from './src/routes/projectRoutes.js';
 
 const app = express();
+app.set('trust proxy', 1);
 const port = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
