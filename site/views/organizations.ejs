@@ -1,40 +1,44 @@
+
 <%- include('partials/header') %>
 
-    <main>
-        <h1>
-            <%= title %>
-        </h1>
+<main>
+    <h1><%= title %></h1>
 
-        <a href="/new-organization" class="btn">Create New Organization</a>
-
-        <p class="page-intro">
-            Browse organizations you can volunteer with. Each partner works with local communities on ongoing service
-            work.
+    <% if (isAdmin) { %>
+        <p>
+            <a href="/new-organization" class="btn">Create New Organization</a>
         </p>
+    <% } %>
 
-        <section class="card-grid">
-            <% organizations.forEach((organization)=> { %>
-                <article class="card">
-                    <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo"
-                        class="organization-logo">
+    <p class="page-intro">
+        Browse organizations you can volunteer with. Each partner works
+        with local communities on ongoing service work.
+    </p>
 
-                    <h2>
-                        <a href="/organization/<%= organization.organization_id %>">
-                            <%= organization.name %>
-                        </a>
-                    </h2>
+    <section class="card-grid">
+        <% organizations.forEach((organization) => { %>
+            <article class="card">
+                <img
+                    src="/images/<%= organization.logo_filename %>"
+                    alt="<%= organization.name %> logo"
+                    class="organization-logo"
+                >
 
-                    <p>
-                        <%= organization.description %>
-                    </p>
+                <h2>
+                    <a href="/organization/<%= organization.organization_id %>">
+                        <%= organization.name %>
+                    </a>
+                </h2>
 
-                    <p>
-                        <strong>Contact:</strong>
-                        <%= organization.contact_email %>
-                    </p>
-                </article>
-                <% }); %>
-        </section>
-    </main>
+                <p><%= organization.description %></p>
 
-    <%- include('partials/footer') %>
+                <p>
+                    <strong>Contact:</strong>
+                    <%= organization.contact_email %>
+                </p>
+            </article>
+        <% }); %>
+    </section>
+</main>
+
+<%- include('partials/footer') %>

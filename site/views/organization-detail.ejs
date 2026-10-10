@@ -1,85 +1,72 @@
+
 <%- include('partials/header') %>
 
-    <main>
-        <article class="content-section organization-detail">
+<main>
+    <article class="content-section organization-detail">
+        <div class="organization-header">
+            <div class="organization-info">
+                <h1><%= organization.name %></h1>
 
-            <div class="organization-header">
-                <div class="organization-info">
-                    <h1>
-                        <%= organization.name %>
-                    </h1>
+                <p><%= organization.description %></p>
 
-                    <p>
-                        <%= organization.description %>
-                    </p>
-
-                    <p>
-                        <strong>Contact:</strong>
-                        <a href="mailto:<%= organization.contact_email %>">
-                            <%= organization.contact_email %>
-                        </a>
-                    </p>
-                </div>
-
-                <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo"
-                    class="organization-detail-logo">
+                <p>
+                    <strong>Contact:</strong>
+                    <a href="mailto:<%= organization.contact_email %>">
+                        <%= organization.contact_email %>
+                    </a>
+                </p>
             </div>
 
-        </article>
+            <img
+                src="/images/<%= organization.logo_filename %>"
+                alt="<%= organization.name %> logo"
+                class="organization-detail-logo"
+            >
+        </div>
+    </article>
 
+    <% if (isAdmin) { %>
         <p>
-            <a href="/edit-organization/<%= organization.organization_id %>" class="btn">
-                Edit Organization
-            </a>
+            <a
+                href="/edit-organization/<%= organization.organization_id %>"
+                class="btn"
+            >Edit Organization</a>
         </p>
+    <% } %>
 
-        <section class="content-section">
-            <h2>Service Projects</h2>
+    <section class="content-section">
+        <h2>Service Projects</h2>
 
-            <% if (projects.length===0) { %>
+        <% if (projects.length === 0) { %>
+            <p>No service projects are listed for this organization.</p>
+        <% } else { %>
+            <section class="card-grid">
+                <% projects.forEach((project) => { %>
+                    <article class="card">
+                        <h3>
+                            <a href="/project/<%= project.project_id %>">
+                                <%= project.title %>
+                            </a>
+                        </h3>
 
-                <p>No service projects are listed for this organization.</p>
+                        <p><%= project.description %></p>
 
-                <% } else { %>
+                        <p>
+                            <strong>Location:</strong>
+                            <%= project.location %>
+                        </p>
 
-                    <section class="card-grid">
+                        <p>
+                            <strong>Date:</strong>
+                            <%= new Date(project.project_date).toDateString() %>
+                        </p>
+                    </article>
+                <% }); %>
+            </section>
+        <% } %>
+    </section>
 
-                        <% projects.forEach((project)=> { %>
+    <p><a href="/organizations">Back to Organizations</a></p>
+</main>
 
-                            <article class="card">
-
-                                <h3>
-                                    <a href="/project/<%= project.project_id %>">
-                                        <%= project.title %>
-                                    </a>
-                                </h3>
-
-                                <p>
-                                    <%= project.description %>
-                                </p>
-
-                                <p>
-                                    <strong>Location:</strong>
-                                    <%= project.location %>
-                                </p>
-
-                                <p>
-                                    <strong>Date:</strong>
-                                    <%= project.project_date.toDateString() %>
-                                </p>
-
-                            </article>
-
-                            <% }) %>
-
-                    </section>
-
-                    <% } %>
-        </section>
-
-        <p>
-            <a href="/organizations">Back to Organizations</a>
-        </p>
-    </main>
-
-    <%- include('partials/footer') %>
+<%- include('partials/footer') %>

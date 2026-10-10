@@ -1,3 +1,4 @@
+
 import { Router } from 'express';
 import { body } from 'express-validator';
 
@@ -11,8 +12,11 @@ import {
     updateProjectCategoriesController
 } from '../controllers/projectController.js';
 
+import { requireRole } from '../middleware/auth.js';
+
 const router = Router();
 
+// Validation rules for project forms
 const projectValidation = [
     body('organization_id')
         .trim()
@@ -50,28 +54,42 @@ const projectValidation = [
         .withMessage('Please enter a valid project date.')
 ];
 
+// Public viewing routes
 router.get('/projects', showProjectsPage);
-
 router.get('/project/:id', showProjectDetailsPage);
 
-router.get('/new-project', showNewProjectPage);
+// Administrator-only creation routes
+router.get(
+    '/new-project',
+    requireRole('Admin'),
+    showNewProjectPage
+);
 
 router.post(
     '/new-project',
+    requireRole('Admin'),
     projectValidation,
     createProjectController
 );
 
-router.get('/edit-project/:id', showEditProjectPage);
+// Administrator-only editing routes
+router.get(
+    '/edit-project/:id',
+    requireRole('Admin'),
+    showEditProjectPage
+);
 
 router.post(
     '/edit-project/:id',
+    requireRole('Admin'),
     projectValidation,
     updateProjectController
 );
 
+// Administrator-only category reassignment
 router.post(
     '/project/:id/categories',
+    requireRole('Admin'),
     updateProjectCategoriesController
 );
 

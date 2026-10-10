@@ -1,3 +1,4 @@
+
 import { Router } from 'express';
 import { body } from 'express-validator';
 
@@ -10,8 +11,11 @@ import {
     updateOrganizationController
 } from '../controllers/organizationController.js';
 
+import { requireRole } from '../middleware/auth.js';
+
 const router = Router();
 
+// Validation rules for organization forms
 const organizationValidation = [
     body('name')
         .trim()
@@ -44,22 +48,34 @@ const organizationValidation = [
         .withMessage('Logo filename must be between 3 and 255 characters.')
 ];
 
+// Public viewing routes
 router.get('/organizations', showOrganizationsPage);
-
 router.get('/organization/:id', showOrganizationDetailsPage);
 
-router.get('/new-organization', showNewOrganizationPage);
+// Administrator-only creation routes
+router.get(
+    '/new-organization',
+    requireRole('Admin'),
+    showNewOrganizationPage
+);
 
 router.post(
     '/new-organization',
+    requireRole('Admin'),
     organizationValidation,
     createOrganizationController
 );
 
-router.get('/edit-organization/:id', showEditOrganizationPage);
+// Administrator-only editing routes
+router.get(
+    '/edit-organization/:id',
+    requireRole('Admin'),
+    showEditOrganizationPage
+);
 
 router.post(
     '/edit-organization/:id',
+    requireRole('Admin'),
     organizationValidation,
     updateOrganizationController
 );

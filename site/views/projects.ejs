@@ -1,57 +1,52 @@
+
 <%- include('partials/header') %>
 
-    <main>
-        <h1>Service Projects</h1>
+<main>
+    <h1>Service Projects</h1>
 
-        <a href="/new-project" class="btn">Create New Service Project</a>
-        <p class="intro">
-            Explore the service projects available through our partner organizations.
+    <% if (isAdmin) { %>
+        <p>
+            <a href="/new-project" class="btn">Create New Service Project</a>
         </p>
+    <% } %>
 
-        <div class="project-list">
+    <p class="intro">
+        Explore the service projects available through our partner organizations.
+    </p>
 
-            <% if (projects.length===0) { %>
+    <div class="project-list">
+        <% if (projects.length === 0) { %>
+            <p>No service projects are currently available.</p>
+        <% } else { %>
+            <% projects.forEach((project) => { %>
+                <article class="project-card">
+                    <p class="project-header">
+                        <span class="date">
+                            <%= new Date(project.project_date).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            }) %>:
+                        </span>
 
-                <p>No service projects are currently available.</p>
+                        <a href="/project/<%= project.project_id %>">
+                            <%= project.title %>
+                        </a>
 
-                <% } else { %>
+                        <span class="org">
+                            (<%= project.organization_name %>)
+                        </span>
+                    </p>
 
-                    <% projects.forEach((project)=> { %>
+                    <p class="project-desc"><%= project.description %></p>
 
-                        <article class="project-card">
+                    <p class="project-location">
+                        Location: <%= project.location %>
+                    </p>
+                </article>
+            <% }); %>
+        <% } %>
+    </div>
+</main>
 
-                            <p class="project-header">
-
-                                <span class="date">
-                                    <%= new Date(project.project_date).toLocaleDateString('en-GB', { day: 'numeric' ,
-                                        month: 'long' , year: 'numeric' }) %>:
-                                </span>
-
-                                <a href="/project/<%= project.project_id %>">
-                                    <%= project.title %>
-                                </a>
-
-                                <span class="org">
-                                    (<%= project.organization_name %>)
-                                </span>
-
-                            </p>
-
-                            <p class="project-desc">
-                                <%= project.description %>
-                            </p>
-
-                            <p class="project-location">
-                                Location: <%= project.location %>
-                            </p>
-
-                        </article>
-
-                        <% }) %>
-
-                            <% } %>
-
-        </div>
-    </main>
-
-    <%- include('partials/footer') %>
+<%- include('partials/footer') %>

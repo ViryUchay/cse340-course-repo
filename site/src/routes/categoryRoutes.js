@@ -1,3 +1,4 @@
+
 import { Router } from 'express';
 import { body } from 'express-validator';
 
@@ -10,8 +11,11 @@ import {
     updateCategoryController
 } from '../controllers/categoryController.js';
 
+import { requireRole } from '../middleware/auth.js';
+
 const router = Router();
 
+// Validation rules for category forms
 const categoryValidation = [
     body('name')
         .trim()
@@ -21,22 +25,34 @@ const categoryValidation = [
         .withMessage('Category name must be between 3 and 100 characters.')
 ];
 
+// Public viewing routes
 router.get('/categories', showCategoriesPage);
-
 router.get('/category/:id', showCategoryDetailsPage);
 
-router.get('/new-category', showNewCategoryPage);
+// Administrator-only creation routes
+router.get(
+    '/new-category',
+    requireRole('Admin'),
+    showNewCategoryPage
+);
 
 router.post(
     '/new-category',
+    requireRole('Admin'),
     categoryValidation,
     createCategoryController
 );
 
-router.get('/edit-category/:id', showEditCategoryPage);
+// Administrator-only editing routes
+router.get(
+    '/edit-category/:id',
+    requireRole('Admin'),
+    showEditCategoryPage
+);
 
 router.post(
     '/edit-category/:id',
+    requireRole('Admin'),
     categoryValidation,
     updateCategoryController
 );
