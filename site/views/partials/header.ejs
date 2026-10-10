@@ -1,45 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %> | Service Connect</title>
+  <title>
+    <%= title %> | Service Connect
+  </title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
+
 <body>
   <header class="site-header">
     <div class="header-container">
       <a class="site-logo" href="/">Service Connect</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false"
+        aria-controls="siteNav">
         <span></span>
         <span></span>
         <span></span>
       </button>
+
       <nav class="site-nav" id="siteNav">
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/organizations">Organizations</a></li>
           <li><a href="/projects">Service Projects</a></li>
           <li><a href="/categories">Categories</a></li>
+
+          <% if (isLoggedIn) { %>
+            <li><a href="/account/management">Account</a></li>
+
+            <% if (isAdmin) { %>
+              <li><a href="/account/admin">Registered Users</a></li>
+              <% } %>
+
+                <li><a href="/account/logout">Logout</a></li>
+                <% } else { %>
+                  <li><a href="/account/register">Register</a></li>
+                  <li><a href="/account/login">Login</a></li>
+                  <% } %>
         </ul>
       </nav>
     </div>
   </header>
 
-<% if (successMessages && successMessages.length > 0) { %>
+  <% if (successMessages && successMessages.length> 0) { %>
     <div class="flash-messages success-message" role="status">
-        <% successMessages.forEach((message) => { %>
-            <p><%= message %></p>
+      <% successMessages.forEach((message)=> { %>
+        <p>
+          <%= message %>
+        </p>
         <% }) %>
     </div>
-<% } %>
+    <% } %>
 
-<% if (errorMessages && errorMessages.length > 0) { %>
-    <div class="flash-messages error-message" role="alert">
-        <% errorMessages.forEach((message) => { %>
-            <p><%= message %></p>
-        <% }) %>
-    </div>
-<% } %>
+      <% if (errorMessages && errorMessages.length> 0) { %>
+        <div class="flash-messages error-message" role="alert">
+          <% errorMessages.forEach((message)=> { %>
+            <p>
+              <%= message %>
+            </p>
+            <% }) %>
+        </div>
+        <% } %>
 
-<main class="site-main">
+          <main class="site-main">

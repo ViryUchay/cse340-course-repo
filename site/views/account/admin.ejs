@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+
+    <main class="container">
+        <h1>Registered Users</h1>
+
+        <p>
+            This page is available only to administrators.
+        </p>
+
+        <% if (accounts && accounts.length> 0) { %>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Email Address</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% accounts.forEach((account)=> { %>
+                            <tr>
+                                <td>
+                                    <%= account.account_firstname %>
+                                </td>
+                                <td>
+                                    <%= account.account_lastname %>
+                                </td>
+                                <td>
+                                    <%= account.account_email %>
+                                </td>
+                                <td>
+                                    <%= account.account_type %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+                <p>No registered accounts were found.</p>
+                <% } %>
+
+                    <p>
+                        <a href="/account/management">Back to Account Management</a>
+                    </p>
+    </main>
+
+    <%- include('../partials/footer') %>

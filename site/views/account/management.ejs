@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+    <main class="container">
+        <h1>Account Management</h1>
+
+        <% if (accountData) { %>
+            <p>
+                Welcome,
+                <strong>
+                    <%= accountData.account_firstname %>
+                </strong>!
+            </p>
+
+            <section>
+                <h2>Your Account Details</h2>
+
+                <p>
+                    <strong>Name:</strong>
+                    <%= accountData.account_firstname %>
+                        <%= accountData.account_lastname %>
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    <%= accountData.account_email %>
+                </p>
+
+                <p>
+                    <strong>Account Role:</strong>
+                    <%= accountData.account_type %>
+                </p>
+            </section>
+
+            <% if (accountData.account_type==='Admin' ) { %>
+                <section>
+                    <h2>Administration</h2>
+                    <p>Manage and review registered Service Connect users.</p>
+                    <a href="/account/admin">View Registered Users</a>
+                </section>
+                <% } %>
+
+                    <% } else { %>
+                        <p>Please log in to view your account details.</p>
+                        <a href="/account/login">Log In</a>
+                        <% } %>
+    </main>
+
+    <%- include('../partials/footer') %>

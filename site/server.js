@@ -7,6 +7,7 @@ import flash from 'connect-flash';
 import categoryRoutes from './src/routes/categoryRoutes.js';
 import organizationRoutes from './src/routes/organizationRoutes.js';
 import projectRoutes from './src/routes/projectRoutes.js';
+import accountRoutes from './src/routes/accountRoutes.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -48,9 +49,14 @@ app.use(
 app.use(flash());
 
 // Make flash messages available to all EJS templates
+
 app.use((req, res, next) => {
     res.locals.successMessages = req.flash('success');
     res.locals.errorMessages = req.flash('error');
+    res.locals.accountData = req.session.account || null;
+    res.locals.isLoggedIn = Boolean(req.session.account);
+    res.locals.isAdmin =
+        req.session.account?.account_type === 'Admin';
     next();
 });
 
@@ -84,6 +90,7 @@ app.get('/', asyncHandler(async (req, res) => {
 app.use('/', organizationRoutes);
 app.use('/', projectRoutes);
 app.use('/', categoryRoutes);
+app.use('/', accountRoutes);
 
 // 404 handler
 app.use((req, res) => {
