@@ -1,6 +1,7 @@
 -- ============================================
 -- Reset (drop in dependency order)
 -- ============================================
+DROP TABLE IF EXISTS project_volunteers;
 DROP TABLE IF EXISTS project_categories;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS service_project;
@@ -44,6 +45,22 @@ CREATE TABLE service_project (
     description TEXT NOT NULL,
     location VARCHAR(150) NOT NULL,
     project_date DATE NOT NULL
+);
+
+
+-- ============================================
+-- Project Volunteers Join Table (many-to-many)
+-- ============================================
+CREATE TABLE project_volunteers (
+    project_id INT NOT NULL
+        REFERENCES service_project(project_id)
+        ON DELETE CASCADE,
+
+    account_id INT NOT NULL
+        REFERENCES account(account_id)
+        ON DELETE CASCADE,
+
+    PRIMARY KEY (project_id, account_id)
 );
 
 INSERT INTO service_project (organization_id, title, description, location, project_date) VALUES

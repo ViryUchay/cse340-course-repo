@@ -1,10 +1,14 @@
+
 import { validationResult } from 'express-validator';
 
 import {
     getAllProjects,
     getProjectDetails,
     createProject,
-    updateProject
+    updateProject,
+    addVolunteer,
+    removeVolunteer,
+    isAccountVolunteering
 } from '../models/projects.js';
 
 import {
@@ -32,7 +36,7 @@ const showProjectDetailsPage = async (req, res, next) => {
     try {
         const projectId = Number.parseInt(req.params.id, 10);
 
-        if (Number.isNaN(projectId)) {
+        if (Number.isNaN(projectId) || projectId < 1) {
             return res.status(404).render('404', {
                 title: 'Project Not Found'
             });
@@ -49,11 +53,23 @@ const showProjectDetailsPage = async (req, res, next) => {
         const categories = await getCategoriesByProject(projectId);
         const allCategories = await getCategories();
 
+        const accountId = req.session.account?.account_id;
+        let isVolunteering = false;
+
+        if (accountId) {
+            isVolunteering = await isAccountVolunteering(
+                projectId,
+                accountId
+            );
+        }
+
         res.render('project-detail', {
             title: project.title,
             project,
             categories,
-            allCategories
+            allCategories,
+            isLoggedIn: Boolean(accountId),
+            isVolunteering
         });
     } catch (error) {
         next(error);
@@ -132,7 +148,7 @@ const showEditProjectPage = async (req, res, next) => {
     try {
         const projectId = Number.parseInt(req.params.id, 10);
 
-        if (Number.isNaN(projectId)) {
+        if (Number.isNaN(projectId) || projectId < 1) {
             return res.status(404).render('404', {
                 title: 'Project Not Found'
             });
@@ -184,7 +200,7 @@ const updateProjectController = async (req, res, next) => {
         const location = req.body.location?.trim() || '';
         const projectDate = req.body.project_date?.trim() || '';
 
-        if (Number.isNaN(projectId)) {
+        if (Number.isNaN(projectId) || projectId < 1) {
             return res.status(404).render('404', {
                 title: 'Project Not Found'
             });
@@ -235,7 +251,7 @@ const updateProjectCategoriesController = async (req, res, next) => {
     try {
         const projectId = Number.parseInt(req.params.id, 10);
 
-        if (Number.isNaN(projectId)) {
+        if (Number.isNaN(projectId) || projectId < 1) {
             return res.status(404).render('404', {
                 title: 'Project Not Found'
             });
@@ -272,6 +288,103 @@ const updateProjectCategoriesController = async (req, res, next) => {
     }
 };
 
+// Allow a logged-in account to volunteer for a project.
+const volunteerForProjectController = async (req, res, next) => {
+    try {
+        const projectId = Number.parseInt(req.params.id, 10);
+        const accountId = req.session.account?.account_id;
+
+        if (!accountId) {
+            req.flash('error', 'Please log in to volunteer.');
+            return res.redirect('/account/login');
+        }
+
+        if (Number.isNaN(projectId) || projectId < 1) {
+            return res.status(404).render('404', {
+                title: 'Project Not Found'
+            });
+        }
+
+        const project = await getProjectDetails(projectId);
+
+        if (!project) {
+            return res.status(404).render('404', {
+                title: 'Project Not Found'
+            });
+        }
+
+        const existingSignup = await isAccountVolunteering(
+            projectId,
+            accountId
+        );
+
+        if (existingSignup) {
+            req.flash(
+                'notice',
+                'You have already signed up for this project.'
+            );
+        } else {
+            await addVolunteer(projectId, accountId);
+            req.flash(
+                'success',
+                'You have successfully signed up to volunteer.'
+            );
+        }
+
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Allow a logged-in account to cancel its own volunteer signup.
+const removeVolunteerController = async (req, res, next) => {
+    try {
+        const projectId = Number.parseInt(req.params.id, 10);
+        const accountId = req.session.account?.account_id;
+
+        if (!accountId) {
+            req.flash('error', 'Please log in to manage your volunteer signups.');
+            return res.redirect('/account/login');
+        }
+
+        if (Number.isNaN(projectId) || projectId < 1) {
+            return res.status(404).render('404', {
+                title: 'Project Not Found'
+            });
+        }
+
+        const project = await getProjectDetails(projectId);
+
+        if (!project) {
+            return res.status(404).render('404', {
+                title: 'Project Not Found'
+            });
+        }
+
+        const removedSignup = await removeVolunteer(
+            projectId,
+            accountId
+        );
+
+        if (removedSignup) {
+            req.flash(
+                'success',
+                'You have cancelled your volunteer signup.'
+            );
+        } else {
+            req.flash(
+                'notice',
+                'You were not signed up for this project.'
+            );
+        }
+
+        res.redirect(`/project/${projectId}`);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export {
     showProjectsPage,
     showProjectDetailsPage,
@@ -279,5 +392,7 @@ export {
     createProjectController,
     showEditProjectPage,
     updateProjectController,
-    updateProjectCategoriesController
+    updateProjectCategoriesController,
+    volunteerForProjectController,
+    removeVolunteerController
 };

@@ -1,48 +1,111 @@
-<%- include('../partials/header') %>
+<%- include("../partials/header") %>
 
     <main class="container">
         <h1>Account Management</h1>
 
-        <% if (accountData) { %>
-            <p>
-                Welcome,
-                <strong>
-                    <%= accountData.account_firstname %>
-                </strong>!
-            </p>
+        <% if (typeof successMessages !=="undefined" && successMessages.length> 0) { %>
+            <div class="flash-message success" role="status">
+                <%= successMessages[0] %>
+            </div>
+            <% } %>
 
-            <section>
-                <h2>Your Account Details</h2>
+                <% if (typeof errorMessages !=="undefined" && errorMessages.length> 0) { %>
+                    <div class="flash-message error" role="alert">
+                        <%= errorMessages[0] %>
+                    </div>
+                    <% } %>
 
-                <p>
-                    <strong>Name:</strong>
-                    <%= accountData.account_firstname %>
-                        <%= accountData.account_lastname %>
-                </p>
+                        <% if (typeof noticeMessages !=="undefined" && noticeMessages.length> 0) { %>
+                            <div class="flash-message" role="status">
+                                <%= noticeMessages[0] %>
+                            </div>
+                            <% } %>
 
-                <p>
-                    <strong>Email:</strong>
-                    <%= accountData.account_email %>
-                </p>
+                                <section>
+                                    <h2>My Account</h2>
 
-                <p>
-                    <strong>Account Role:</strong>
-                    <%= accountData.account_type %>
-                </p>
-            </section>
+                                    <p>
+                                        <strong>Name:</strong>
+                                        <%= accountData.account_firstname %>
+                                            <%= accountData.account_lastname %>
+                                    </p>
 
-            <% if (accountData.account_type==='Admin' ) { %>
-                <section>
-                    <h2>Administration</h2>
-                    <p>Manage and review registered Service Connect users.</p>
-                    <a href="/account/admin">View Registered Users</a>
-                </section>
-                <% } %>
+                                    <p>
+                                        <strong>Email:</strong>
+                                        <%= accountData.account_email %>
+                                    </p>
 
-                    <% } else { %>
-                        <p>Please log in to view your account details.</p>
-                        <a href="/account/login">Log In</a>
-                        <% } %>
+                                    <p>
+                                        <strong>Account Type:</strong>
+                                        <%= accountData.account_type %>
+                                    </p>
+                                </section>
+
+                                <hr>
+
+                                <section>
+                                    <h2>My Volunteer Projects</h2>
+
+                                    <% if (typeof volunteerProjects !=="undefined" && volunteerProjects.length> 0) { %>
+
+                                        <% volunteerProjects.forEach(function(project) { %>
+                                            <article class="volunteer-project">
+                                                <h3>
+                                                    <a href="/project/<%= project.project_id %>">
+                                                        <%= project.title %>
+                                                    </a>
+                                                </h3>
+
+                                                <p>
+                                                    <strong>Organization:</strong>
+                                                    <%= project.organization_name %>
+                                                </p>
+
+                                                <p>
+                                                    <strong>Location:</strong>
+                                                    <%= project.location %>
+                                                </p>
+
+                                                <p>
+                                                    <strong>Date:</strong>
+                                                    <%= project.project_date %>
+                                                </p>
+
+                                                <p>
+                                                    <%= project.description %>
+                                                </p>
+
+                                                <form action="/project/<%= project.project_id %>/volunteer/remove"
+                                                    method="POST">
+                                                    <button type="submit">
+                                                        Cancel Volunteer Signup
+                                                    </button>
+                                                </form>
+                                            </article>
+
+                                            <hr>
+                                            <% }); %>
+
+                                                <% } else { %>
+                                                    <p>You have not signed up for any volunteer projects yet.</p>
+                                                    <p>
+                                                        <a href="/projects">Browse Service Projects</a>
+                                                    </p>
+                                                    <% } %>
+                                </section>
+
+                                <% if (accountData.account_type==="Admin" ) { %>
+                                    <hr>
+
+                                    <section>
+                                        <h2>Administration</h2>
+                                        <p>
+                                            <a href="/account/admin">Registered Users</a>
+                                        </p>
+                                    </section>
+                                    <% } %>
+
+                                        <p><a href="/account/logout">Log Out</a></p>
     </main>
 
-    <%- include('../partials/footer') %>
+    <%- include("../partials/footer") %>

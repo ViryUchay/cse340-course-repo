@@ -1,6 +1,9 @@
 
 import bcrypt from "bcrypt";
 import * as accountModel from "../models/account-model.js";
+import {
+    getVolunteerProjectsByAccountId
+} from "../models/projects.js";
 
 // Display the registration form
 export function buildRegister(req, res) {
@@ -23,14 +26,20 @@ export async function registerAccount(req, res, next) {
         }
 
         if (password.length < 8) {
-            req.flash("error", "Password must contain at least 8 characters.");
+            req.flash(
+                "error",
+                "Password must contain at least 8 characters."
+            );
             return res.redirect("/account/register");
         }
 
         const existingAccount = await accountModel.getAccountByEmail(email);
 
         if (existingAccount) {
-            req.flash("error", "An account with that email already exists.");
+            req.flash(
+                "error",
+                "An account with that email already exists."
+            );
             return res.redirect("/account/register");
         }
 
@@ -49,7 +58,10 @@ export async function registerAccount(req, res, next) {
         return res.redirect("/account/login");
     } catch (error) {
         if (error.code === "23505") {
-            req.flash("error", "That email address is already registered.");
+            req.flash(
+                "error",
+                "That email address is already registered."
+            );
             return res.redirect("/account/register");
         }
 
@@ -136,12 +148,23 @@ export function logoutAccount(req, res, next) {
     });
 }
 
-// Display the account dashboard
-export function buildManagement(req, res) {
-    res.render("account/management", {
-        title: "Account Management",
-        accountData: req.session.account
-    });
+// Display the account dashboard and the user's volunteer projects
+export async function buildManagement(req, res, next) {
+    try {
+        const accountData = req.session.account;
+
+        const volunteerProjects = await getVolunteerProjectsByAccountId(
+            accountData.account_id
+        );
+
+        res.render("account/management", {
+            title: "Account Management",
+            accountData,
+            volunteerProjects
+        });
+    } catch (error) {
+        next(error);
+    }
 }
 
 // Display all registered accounts to administrators only.
